@@ -56,6 +56,31 @@
       height: auto;
     }
 
+    .contact-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .contact-title-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+  
+      .contact-input {
+        width: 70%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      
+    }
+
+
     /* Responsive image sizing */
     @media (min-width: 768px) {
       .center-image img {
@@ -77,6 +102,16 @@
 
   <div class="center-image">
     <img src="favicon.png" alt="image not found" style="width: 70%; height: auto;">
+  </div>
+
+  <div class="line">
+    <p class="english">Contact me</p>
+    <p class="french">Contactez-moi</p>
+  </div>
+  <div class="contact-container">
+    <input id="contact-message" class="contact-input" type="text" placeholder="...">
+    <button id="contact-button" class="contact-button">Send</button>
+  </div>
   </div>
 
   <div class="line">
@@ -152,5 +187,17 @@
   <p> </p>
      </div>
     </div>  
+
+  <script>
+    document.getElementById('contact-button').addEventListener('click', function() {
+      const message = document.getElementById('contact-message').value;
+      const email = 'thisismalteh@gmail.com';
+      const subject = encodeURIComponent('Contact from website');
+      const body = encodeURIComponent(message || '');
+      const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoLink;
+      document.getElementById('contact-message').value = '';
+    });
+  </script>
 </body>
 </html>
