@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A bilingual personal magazine by Malte, with stories from Paris and travels further afield.">
+  <meta name="theme-color" content="#f7f4ed">
+  <title>c’est malte — (Untitled) / (Sans titre)</title>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f4ed;
+      --ink: #25211f;
+      --muted: #675d56;
+      --red: #a22720;
+      --rule: #d5ccc0;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: system-ui, sans-serif;
+      --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+      --gutter: clamp(1.25rem, 5vw, 4rem);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 1.0625rem / 1.7 var(--serif);
+    }
+
+    [data-reading="en"] [data-copy="fr"],
+    [data-reading="fr"] [data-copy="en"],
+    [hidden] {
+      display: none;
+    }
+
+    h1, h2, h3, p, figure {
+      margin: 0;
+    }
+
+    img {
+      display: block;
+      max-inline-size: 100%;
+      block-size: auto;
+    }
+
+    a {
+      color: inherit;
+      text-underline-offset: 0.2em;
+    }
+
+    a:hover {
+      color: var(--red);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--red);
+      outline-offset: 4px;
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .frame {
+      inline-size: min(100% - 2 * var(--gutter), 70rem);
+      margin-inline: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      z-index: 1;
+      inset: 0.75rem auto auto var(--gutter);
+      padding: 0.5rem 1rem;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .skip-link:not(:focus) {
+      clip-path: inset(50%);
+    }
+
+    .skip-link:hover {
+      color: #fff;
+    }
+
+    .site-header {
+      border-block-start: 4px solid var(--red);
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.85rem 1rem;
+      padding-block: 1rem 0.7rem;
+      border-block-end: 1px solid var(--ink);
+    }
+
+    .wordmark {
+      justify-self: start;
+      font-size: clamp(1.55rem, 3.5vw, 2rem);
+      font-weight: bold;
+      letter-spacing: -0.045em;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .site-nav {
+      grid-column: 1 / -1;
+    }
+
+    .site-nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.25rem clamp(0.85rem, 3vw, 1.75rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-nav a {
+      display: block;
+      min-block-size: 2.75rem;
+      padding-block: 0.35rem;
+      font: 600 0.79rem / 1.3 var(--sans);
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      text-decoration: underline;
+    }
+
+    [data-reading="both"] .site-nav [data-copy="fr"] {
+      display: block;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .language-control:not([hidden]) {
+      display: flex;
+      justify-self: end;
+      gap: 0.125rem;
+      padding: 0.2rem;
+      border: 1px solid var(--rule);
+      border-radius: 0.25rem;
+    }
+
+    .language-control button {
+      min-block-size: 2.25rem;
+      padding: 0.25rem 0.45rem;
+      border: 0;
+      border-radius: 0.125rem;
+      background: transparent;
+      color: var(--ink);
+      font: 650 0.72rem / 1 var(--sans);
+      white-space: nowrap;
+    }
+
+    .language-control button:hover {
+      background: #ece4d9;
+    }
+
+    .language-control button[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .kicker {
+      color: var(--red);
+      font: 700 0.72rem / 1.5 var(--mono);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .kicker [data-copy="en"] + [data-copy="fr"]::before {
+      margin-inline: 0.35em;
+      color: var(--muted);
+      content: "/";
+    }
+
+    [data-reading="fr"] .kicker [data-copy="fr"]::before {
+      content: none;
+    }
+
+    .hero {
+      display: grid;
+      align-items: center;
+      gap: 1.75rem;
+      padding-block: clamp(2.5rem, 7vw, 5.75rem);
+      border-block-end: 1px solid var(--ink);
+    }
+
+    .hero-title {
+      margin-block: 0.9rem 1.4rem;
+      font-size: clamp(3.15rem, 10vw, 7rem);
+      font-weight: 500;
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .hero-title span, .chapter-title span {
+      display: block;
+    }
+
+    [data-reading="both"] :is(.hero-title, .chapter-title) [data-copy="fr"] {
+      margin-block-start: 0.25em;
+      color: var(--red);
+      font-size: 0.67em;
+      font-style: italic;
+      letter-spacing: -0.04em;
+    }
+
+    .read-link {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.6rem;
+      padding-block: 0.4rem;
+      color: var(--red);
+      font: 650 0.85rem / 1.4 var(--sans);
+    }
+
+    .read-link:hover {
+      color: var(--ink);
+    }
+
+    .cover-art {
+      display: grid;
+      justify-self: center;
+      place-items: center;
+      inline-size: min(52%, 12rem);
+      aspect-ratio: 1;
+      background: #fff;
+      border: 1px solid var(--rule);
+    }
+
+    .cover-art img {
+      inline-size: 83%;
+    }
+
+    .chapter {
+      padding-block: clamp(2.5rem, 6vw, 5rem);
+      border-block-end: 1px solid var(--rule);
+    }
+
+    .chapter-header {
+      margin-block-end: clamp(1.4rem, 3vw, 2.25rem);
+    }
+
+    .chapter-title {
+      margin-block-start: 0.45rem;
+      font-size: clamp(2.05rem, 5vw, 4.25rem);
+      font-weight: 500;
+      letter-spacing: -0.055em;
+      line-height: 1.03;
+    }
+
+    .copy {
+      max-inline-size: 64ch;
+      overflow-wrap: break-word;
+    }
+
+    .copy p + p {
+      margin-block-start: 0.85em;
+    }
+
+    [data-reading="both"] .parallel {
+      display: grid;
+      gap: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
+    }
+
+    [data-reading="both"] .parallel > [data-copy="fr"] {
+      padding-block-start: 1.25rem;
+      border-block-start: 1px solid var(--rule);
+    }
+
+    .story-spread {
+      display: grid;
+      align-items: start;
+      gap: 1.75rem;
+    }
+
+    .story-spread + .story-spread {
+      margin-block-start: clamp(2rem, 5vw, 4rem);
+    }
+
+    .story-spread--return {
+      align-items: center;
+    }
+
+    .postcard {
+      inline-size: min(100%, 17rem);
+      margin-inline: auto;
+    }
+
+    .postcard img {
+      inline-size: 100%;
+      border: 1px solid var(--rule);
+    }
+
+    .postcard figcaption {
+      display: flex;
+      gap: 0.65rem;
+      padding-block: 0.55rem;
+      border-block-end: 1px solid var(--rule);
+      color: var(--muted);
+      font: 0.75rem / 1.5 var(--mono);
+    }
+
+    .postcard figcaption span {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .notes h3 {
+      margin-block: 1.25rem 0.55rem;
+      font-size: 1.2rem;
+      line-height: 1.35;
+    }
+
+    .notes ul {
+      margin-block: 0.5rem 1rem;
+      padding-inline-start: 1.3em;
+    }
+
+    .notes li + li {
+      margin-block-start: 0.5em;
+    }
+
+    .notes li::marker {
+      color: var(--red);
+    }
+
+    .unfinished {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .contact {
+      padding-block: clamp(2.5rem, 6vw, 4.5rem);
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .contact :focus-visible {
+      outline-color: #ffab99;
+    }
+
+    .contact .kicker,
+    [data-reading="both"] .contact .chapter-title [data-copy="fr"],
+    .contact a:hover {
+      color: #ffab99;
+    }
+
+    .contact-layout {
+      display: grid;
+      align-items: start;
+      gap: 1.5rem 3rem;
+    }
+
+    .email-link {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.6rem;
+      margin-block-start: 1rem;
+      font: 0.9rem / 1.5 var(--sans);
+    }
+
+    .contact-form {
+      max-inline-size: 36rem;
+      font: 0.9rem / 1.5 var(--sans);
+    }
+
+    .contact-form label {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.65rem;
+      font-weight: 650;
+    }
+
+    .contact-form textarea {
+      display: block;
+      inline-size: 100%;
+      min-block-size: 7rem;
+      margin-block: 0.45rem;
+      padding: 0.65rem;
+      resize: vertical;
+      border: 1px solid #a99d90;
+      border-radius: 0.25rem;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 1rem;
+    }
+
+    .form-hint {
+      color: #dfd5cb;
+      font-size: 0.83rem;
+    }
+
+    .form-hint span {
+      display: block;
+    }
+
+    .contact-form button {
+      margin-block-start: 1rem;
+      min-block-size: 2.75rem;
+      padding: 0.5rem 0.85rem;
+      border: 0;
+      border-radius: 0.25rem;
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .contact-form button:hover {
+      background: #ffdcce;
+    }
+
+    [data-reading="both"] .contact-form button [data-copy="fr"]::before {
+      margin-inline: 0.3em;
+      content: "/";
+    }
+
+    .site-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+      padding-block: 1.25rem;
+      color: var(--muted);
+      font: 0.8rem / 1.5 var(--mono);
+    }
+
+    @media (min-width: 42rem) {
+      .masthead {
+        grid-template-columns: auto auto 1fr;
+        gap: 1rem clamp(1rem, 3vw, 2.5rem);
+      }
+
+      .site-nav {
+        grid-column: 3;
+        justify-self: end;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(10rem, 0.6fr);
+        gap: 2rem;
+      }
+
+      .hero-title {
+        font-size: clamp(3.75rem, 8.4vw, 7rem);
+      }
+
+      .cover-art {
+        justify-self: end;
+        inline-size: min(100%, 21rem);
+      }
+    }
+
+    @media (min-width: 48rem) {
+      [data-reading="both"] .parallel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        background: linear-gradient(var(--rule), var(--rule)) center / 1px 100% no-repeat;
+      }
+
+      [data-reading="both"] .parallel > [data-copy="fr"] {
+        padding-block-start: 0;
+        border-block-start: 0;
+      }
+
+      .contact-layout {
+        grid-template-columns: 1fr 1.1fr;
+        align-items: center;
+      }
+    }
+
+    @media (min-width: 58rem) {
+      .story-spread {
+        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-areas: "copy postcard";
+        gap: clamp(1.75rem, 4vw, 3.5rem);
+      }
+
+      .story-spread--return {
+        grid-template-columns: 15rem minmax(0, 1fr);
+        grid-template-areas: "postcard copy";
+      }
+
+      .story-spread .parallel {
+        grid-area: copy;
+      }
+
+      .story-spread .postcard {
+        grid-area: postcard;
+      }
+    }
+  </style>
+</head>
+<body data-reading="both">
+  <a class="skip-link" href="#main-content">
+    <span data-copy="en" lang="en">Skip to content</span>
+    <span data-copy="fr" lang="fr">Aller au contenu</span>
+  </a>
+
+  <header class="site-header" id="top">
+    <div class="frame masthead">
+      <a class="wordmark" href="#top" lang="fr">c’est malte</a>
+      <div class="language-control" role="group" aria-label="Reading language" hidden>
+        <button type="button" value="both" aria-pressed="true" aria-label="EN + FR, English and French / Anglais et français">EN + FR</button>
+        <button type="button" value="en" aria-pressed="false" aria-label="English" lang="en">EN</button>
+        <button type="button" value="fr" aria-pressed="false" aria-label="Français" lang="fr">FR</button>
+      </div>
+      <nav class="site-nav" aria-label="Contents">
+        <ul>
+          <li><a href="#preface">
+            <span data-copy="en" lang="en">Preface</span>
+            <span data-copy="fr" lang="fr">Préface</span>
+          </a></li>
+          <li><a href="#abduction">
+            <span data-copy="en" lang="en">The Abduction</span>
+            <span data-copy="fr" lang="fr">L’enlèvement</span>
+          </a></li>
+          <li><a href="#notes">Notes</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <div class="frame">
+      <section class="hero" aria-labelledby="issue-title">
+        <div>
+          <p class="kicker">
+            <span data-copy="en" lang="en">A personal magazine</span>
+            <span data-copy="fr" lang="fr">Un magazine personnel</span>
+          </p>
+          <h1 class="hero-title" id="issue-title">
+            <span data-copy="en" lang="en">(Untitled)</span>
+            <span data-copy="fr" lang="fr">(Sans titre)</span>
+          </h1>
+          <a class="read-link" href="#preface">
+            <span data-copy="en" lang="en">Start reading</span>
+            <span data-copy="fr" lang="fr">Commencer la lecture</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+        <div class="cover-art">
+          <img src="../favicon.png" width="682" height="677" alt="">
+        </div>
+      </section>
+
+      <section class="chapter" id="preface" aria-labelledby="preface-title">
+        <header class="chapter-header">
+          <p class="kicker" aria-hidden="true">01 /</p>
+          <h2 class="chapter-title" id="preface-title">
+            <span data-copy="en" lang="en">Preface</span>
+            <span data-copy="fr" lang="fr">Préface</span>
+          </h2>
+        </header>
+        <div class="parallel">
+          <div class="copy" data-copy="en" lang="en">
+            <p>This magazine is a way to share feelings, experiences, and thoughts with the people closest to me. It grew out of my time in Paris and looks back on earlier adventures, from my travels to my time in Amsterdam.</p>
+          </div>
+          <div class="copy" data-copy="fr" lang="fr">
+            <p>Ce magazine me permet de partager des sentiments, des expériences et des réflexions avec les personnes qui me sont les plus proches. Il est né de mon séjour à Paris et revient sur des aventures antérieures, de mes voyages à mes séjours à Amsterdam.</p>
+          </div>
+        </div>
+      </section>
+
+      <article class="chapter" id="abduction" aria-labelledby="abduction-title">
+        <header class="chapter-header">
+          <p class="kicker" aria-hidden="true">02 /</p>
+          <h2 class="chapter-title" id="abduction-title">
+            <span data-copy="en" lang="en">The Abduction</span>
+            <span data-copy="fr" lang="fr">L’enlèvement</span>
+          </h2>
+        </header>
+        <div class="story-spread">
+          <div class="parallel">
+            <div class="copy" data-copy="en" lang="en">
+              <p>This is the story of how Julien and I were abducted in the middle of the Kazakh desert. I’ve told it to many people, but some may never have heard it in full.</p>
+              <p>It starts in March 2025, when Julien and I decided to go on an adventure together. We met in Istanbul, flew to Kyrgyzstan, and continued on to Kazakhstan. After a long ordeal at the world’s biggest land port, we entered the People’s Republic of China, in the autonomous region of Xinjiang. There, the local Uyghur population was subjected to Chinese colonial rule. We spoke with people and explored the Muslim culture and cuisine of this Turkic ethnic group. Their suffering is part of another story that has to be told.</p>
+            </div>
+            <div class="copy" data-copy="fr" lang="fr">
+              <p>Voici comment Julien et moi avons été enlevés en plein désert kazakh. J’ai raconté cette histoire à beaucoup de gens, mais certains ne l’ont peut-être jamais entendue en entier.</p>
+              <p>L’histoire commence en mars 2025, lorsque Julien et moi avons décidé de partir ensemble à l’aventure. Nous nous sommes retrouvés à Istanbul, puis avons pris l’avion pour le Kirghizistan avant de poursuivre notre voyage vers le Kazakhstan. Après une longue épreuve au plus grand poste-frontière terrestre du monde, nous sommes entrés en République populaire de Chine, dans la région autonome du Xinjiang. Là, la population ouïghoure était soumise à la domination coloniale chinoise. Nous avons parlé avec les habitants et découvert la culture musulmane et la cuisine de ce peuple turcique. Leur souffrance fait partie d’une autre histoire qui reste à raconter.</p>
+            </div>
+          </div>
+          <figure class="postcard">
+            <img src="../yining.png" width="1080" height="1920" loading="lazy" decoding="async"
+              alt="A dark vehicle with a red roof light in front of a building in Yining."
+              data-alt-fr="Un véhicule sombre surmonté d’un gyrophare rouge devant un bâtiment à Yining." lang="en">
+            <figcaption><span aria-hidden="true">01</span> Yining, Xinjiang</figcaption>
+          </figure>
+        </div>
+        <div class="story-spread story-spread--return">
+          <div class="parallel">
+            <div class="copy" data-copy="en" lang="en">
+              <p>After a stay that left a deep impression on us, we decided it was time to head back to Central Asia and catch our flight home to Europe.</p>
+            </div>
+            <div class="copy" data-copy="fr" lang="fr">
+              <p>Ce séjour nous a profondément marqués. Nous avons décidé qu’il était temps de retourner en Asie centrale pour prendre notre vol de retour vers l’Europe.</p>
+            </div>
+          </div>
+          <figure class="postcard">
+            <img src="../almatykazakhstan.png" width="1080" height="1920" loading="lazy" decoding="async"
+              alt="A person wearing a blue peaked cap stands in front of a wall map."
+              data-alt-fr="Une personne porte une casquette bleue devant une carte murale." lang="en">
+            <figcaption><span aria-hidden="true">02</span> Medeu, Almaty, Kazakhstan</figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <section class="chapter notes" id="notes" aria-labelledby="notes-title">
+        <header class="chapter-header">
+          <p class="kicker" aria-hidden="true">03 /</p>
+          <h2 class="chapter-title" id="notes-title">
+            <span data-copy="en" lang="en">Notes on poverty tourism</span>
+            <span data-copy="fr" lang="fr">Notes sur le tourisme de la pauvreté</span>
+          </h2>
+        </header>
+        <div class="parallel">
+          <div class="copy" data-copy="en" lang="en">
+            <p>During my travels in South America, I encountered some of the poorest areas in the world. As a Western tourist, I wondered how I could visit these places and communities without falling into the trap of poverty tourism. I raised the question with other European travelers. Some didn’t see what the issue was, while others understood and advised me to avoid poor areas altogether.</p>
+            <h3>How do I avoid being a poverty tourist?</h3>
+            <ul>
+              <li>Refrain from taking pictures.</li>
+              <li>Spend money locally. Eat at local restaurants, hire local people, and stay in family-run posadas. Avoid international chains.</li>
+              <li>Avoid sensitive questions about politics and hardship. Ask people about their passions and perspectives.</li>
+              <li>Turn to local sources for context and look beyond Western media coverage.</li>
+              <li>When talking about the country, focus on culture, resilience, personal stories, human dignity, and agency.</li>
+            </ul>
+            <p class="unfinished">To avoid reproducing colonial and class hierarchies, I need to…</p>
+          </div>
+          <div class="copy" data-copy="fr" lang="fr">
+            <p>Lors de mes voyages en Amérique du Sud, j’ai découvert certaines des régions les plus pauvres du monde. En tant que touriste occidental, je me suis demandé comment visiter ces lieux et rencontrer leurs habitants sans tomber dans le piège du tourisme de la pauvreté. J’en ai parlé à d’autres voyageurs européens. Certains ne voyaient pas où était le problème, tandis que d’autres le comprenaient et me conseillaient d’éviter complètement les régions pauvres.</p>
+            <h3>Comment éviter de pratiquer le tourisme de la pauvreté&nbsp;?</h3>
+            <ul>
+              <li>Éviter de prendre des photos.</li>
+              <li>Dépenser sur place. Manger dans des restaurants locaux, faire appel aux habitants et séjourner dans des posadas familiales. Éviter les chaînes internationales.</li>
+              <li>Éviter les questions sensibles sur la politique et les difficultés du quotidien. Interroger les gens sur leurs passions et leur façon de voir les choses.</li>
+              <li>Consulter des sources locales pour comprendre le contexte et aller au-delà de la couverture des médias occidentaux.</li>
+              <li>En parlant du pays, mettre l’accent sur sa culture, la résilience, les histoires personnelles, la dignité humaine et la capacité d’agir des personnes.</li>
+            </ul>
+            <p class="unfinished">Pour éviter de reproduire les hiérarchies coloniales et de classe, il faut que je…</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="frame contact-layout">
+        <div>
+          <p class="kicker" aria-hidden="true">04 /</p>
+          <h2 class="chapter-title" id="contact-title">
+            <span data-copy="en" lang="en">Get in touch</span>
+            <span data-copy="fr" lang="fr">Contactez-moi</span>
+          </h2>
+          <a class="email-link" id="email-link" href="mailto:thisismalteh@gmail.com">
+            <span data-copy="en" lang="en">Email me directly</span>
+            <span data-copy="fr" lang="fr">M’écrire par e-mail</span>
+          </a>
+        </div>
+
+        <form class="contact-form" id="contact-form" hidden>
+          <label for="contact-message">
+            <span data-copy="en" lang="en">Your message</span>
+            <span data-copy="fr" lang="fr">Votre message</span>
+          </label>
+          <textarea id="contact-message" name="message" rows="4" aria-describedby="contact-hint"></textarea>
+          <p class="form-hint" id="contact-hint">
+            <span data-copy="en" lang="en">This opens a draft in your email app.</span>
+            <span data-copy="fr" lang="fr">Un brouillon s’ouvrira dans votre application de messagerie.</span>
+          </p>
+          <button type="submit">
+            <span data-copy="en" lang="en">Open email draft</span>
+            <span data-copy="fr" lang="fr">Ouvrir un brouillon</span>
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="frame site-footer">
+    <span lang="fr">c’est malte</span>
+    <a href="#top">
+      <span data-copy="en" lang="en">Back to top</span>
+      <span data-copy="fr" lang="fr">Haut de page</span>
+      <span aria-hidden="true">↑</span>
+    </a>
+  </footer>
+
+  <script>
+    const languageControl = document.querySelector('.language-control');
+    const languageButtons = languageControl.querySelectorAll('button');
+    const navigation = document.querySelector('.site-nav');
+    const postcards = Array.from(document.querySelectorAll('[data-alt-fr]'), image => ({
+      image,
+      englishAlt: image.alt
+    }));
+
+    function setReadingLanguage(reading) {
+      const pageLanguage = reading === 'fr' ? 'fr' : 'en';
+      document.body.dataset.reading = reading;
+      document.documentElement.lang = pageLanguage;
+      languageControl.setAttribute('aria-label', pageLanguage === 'fr' ? 'Langue de lecture' : 'Reading language');
+      navigation.setAttribute('aria-label', pageLanguage === 'fr' ? 'Sommaire' : 'Contents');
+
+      languageButtons.forEach(button => {
+        button.setAttribute('aria-pressed', String(button.value === reading));
+      });
+
+      postcards.forEach(({ image, englishAlt }) => {
+        image.lang = pageLanguage;
+        image.alt = pageLanguage === 'fr' ? image.dataset.altFr : englishAlt;
+      });
+    }
+
+    languageButtons.forEach(button => {
+      button.addEventListener('click', () => setReadingLanguage(button.value));
+    });
+    languageControl.hidden = false;
+
+    const contactForm = document.getElementById('contact-form');
+    const emailLink = document.getElementById('email-link');
+    const contactMessage = document.getElementById('contact-message');
+
+    contactForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const subject = encodeURIComponent('Contact from website');
+      const message = contactMessage.value.replace(/\n/g, '\r\n');
+      const body = encodeURIComponent(message);
+      window.location.href = emailLink.href + '?subject=' + subject + '&body=' + body;
+    });
+    contactForm.hidden = false;
+  </script>
+</body>
+</html>
