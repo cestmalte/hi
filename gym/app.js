@@ -290,7 +290,7 @@ function renderOverview() {
     const date = addDays(monday, index);
     const logged = done.has(date);
     const upcoming = !logged && Boolean(plannedDay(date, schedule));
-    const state = logged ? "Logged" : upcoming ? "Scheduled" : "No workout";
+    const state = logged ? "Logged" : upcoming ? "Suggested workout" : "No workout";
     return `<li class="${logged ? "week-done" : upcoming ? "week-planned" : ""} ${date === today ? "week-today" : ""}" aria-label="${formatDate(date, "full")}, ${state}"><span>${formatDate(date, "weekday")}</span><span class="week-mark" aria-hidden="true">${logged ? "✓" : upcoming ? "○" : "·"}</span></li>`;
   }).join("");
   const bench = currentBench();
@@ -302,10 +302,11 @@ function renderOverview() {
     <div class="stack">
       <section class="hero panel" aria-labelledby="next-workout">
         <div>
-          <p class="eyebrow">Next workout · ${nextDate}</p>
+          <p class="eyebrow">Suggested next workout · ${nextDate}</p>
           <h2 class="hero-title" id="next-workout">Day ${next.day}</h2>
           <p class="hero-subtitle">${esc(next.name)}</p>
-          <div class="hero-actions"><button class="button" type="button" data-action="start-plan" data-day="${next.day}">Load Day ${next.day}</button><a class="text-link" href="#plan">View plan <span aria-hidden="true">→</span></a></div>
+          ${schedule.nextDate > today ? '<p class="metric-note">Rest is suggested. You can still log a workout today.</p>' : ""}
+          <div class="hero-actions"><button class="button" type="button" data-action="start-plan" data-day="${next.day}">Log Day ${next.day}</button><a class="text-link" href="#plan">View plan <span aria-hidden="true">→</span></a></div>
         </div>
         <div class="hero-calendar"><p class="eyebrow">Every-other-day rotation</p><ol class="rotation-grid" aria-label="Upcoming rotation">${rotationTiles(schedule.nextDate, 5, schedule)}</ol></div>
       </section>
@@ -314,7 +315,7 @@ function renderOverview() {
           <div class="panel-heading"><h2 id="consistency-title">Weekly consistency</h2><span class="dim small nowrap">${formatDate(monday, "axis")}–${formatDate(sunday, "axis")}</span></div>
           <p class="stat-large number">${done.size} <span class="stat-unit">training ${done.size === 1 ? "day" : "days"}</span></p>
           <ol class="week" aria-label="Training days this week">${week}</ol>
-          <p class="legend"><span><b aria-hidden="true">✓</b> Logged</span><span><b aria-hidden="true">○</b> Scheduled</span></p>
+          <p class="legend"><span><b aria-hidden="true">✓</b> Logged</span><span><b aria-hidden="true">○</b> Suggested</span></p>
         </section>
         <section class="panel" aria-labelledby="last-workout-title">
           <div class="panel-heading"><h2 id="last-workout-title">Days since last workout</h2></div>
@@ -390,7 +391,7 @@ function renderLog() {
       <section class="panel" aria-labelledby="workout-details-title">
         <div class="panel-heading"><h2 id="workout-details-title">Workout details</h2></div>
         <div class="field-grid">
-          <div class="field"><label for="workout-date">Date</label><input id="workout-date" type="date" max="${localDate()}" required value="${esc(form.date)}" data-field="date"></div>
+          <div class="field"><label for="workout-date">Date</label><input id="workout-date" type="date" max="${localDate()}" required value="${esc(form.date)}" data-field="date" aria-describedby="workout-date-help"><small id="workout-date-help" class="dim">Log any day through today, including rest days.</small></div>
           <div class="field"><label for="workout-day">Rotation day</label><select id="workout-day" data-field="planDay"><option value="">Unscheduled</option>${PLAN.map(day => `<option value="${day.day}" ${form.planDay === day.day ? "selected" : ""}>Day ${day.day}</option>`).join("")}</select></div>
         </div>
         <fieldset class="group-field"><legend>Muscle groups</legend><div class="group-buttons">${GROUPS.map(group => `<label><input type="checkbox" data-field="group" value="${group}" ${groups.includes(group) ? "checked" : ""}><span>${group}</span></label>`).join("")}</div></fieldset>
@@ -558,9 +559,9 @@ function renderPlan() {
   }
   const lastBench = currentBench()?.entry;
   return `${heading("Training plan")}${storageBanner()}<div class="stack">
-    <section class="panel" aria-labelledby="schedule-title"><div class="panel-heading"><div><h2 id="schedule-title">Next 7 days</h2><p class="dim small">Day ${next.day} is next on ${formatDate(schedule.nextDate, "short")}.</p></div></div>
+    <section class="panel" aria-labelledby="schedule-title"><div class="panel-heading"><div><h2 id="schedule-title">Suggested next 7 days</h2><p class="dim small">Day ${next.day} is suggested for ${formatDate(schedule.nextDate, "short")}.</p></div></div>
       <ol class="plan-schedule" aria-label="Next seven training and rest days">${rotationTiles(today, 7, schedule, todayDone)}</ol>
-      <p class="metric-note">Train A, rest, train B, rest, train C, rest, then repeat. The schedule uses your last logged training day.</p>
+      <p class="metric-note">A rest day between workouts is the default. You can log a workout on any day, and the suggested schedule adjusts to your latest session.</p>
     </section>
     <section class="panel" aria-labelledby="priorities-title"><h2 id="priorities-title">Working sets per rotation</h2><div class="plan-priorities">${GROUPS.map(group => `<span>${group} <b>${counts[group]}</b></span>`).join("")}</div><p class="dim small">Sets are counted for each lift’s primary muscle group.</p></section>
     ${PLAN.map(day => `<section class="panel" aria-labelledby="plan-${day.day}-title">

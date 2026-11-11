@@ -40,7 +40,7 @@ Each workout has its own `cestmalte.gym.v1.workout.<id>` browser `localStorage` 
 - **PRs** mark improvements over an earlier best. The bench starting reference provides a mark for the first bench session. The reference has no workout date and stays outside charts, range comparisons, consistency, and exports.
 - **Compare** takes the strongest set for strength or best-set reps and sums reps or volume across each period. For a single date, enter the start date alone. The week preset compares Monday through today with the same weekdays four weeks earlier.
 - **Returning lifter** shows the latest result and best since the return date, alongside the best before the return date and all-time best. Backdate old workouts to include them. The bench starting reference fills an empty pre-return comparison and is included in the bench all-time best.
-- **Schedule** advances once per distinct training date in the return period. An explicit A/B/C tag sets the rotation position. The next session is due two days after the last training date or today if that date has passed.
+- **Schedule** advances once per distinct training date in the return period. An explicit A/B/C tag sets the rotation position. The app suggests the next session two days after your latest workout, or today if that date has passed. You can log on any date through today, including consecutive days.
 
 ## Three-day rotation
 
