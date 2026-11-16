@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#131717">
   <meta name="description" content="Log gym workouts, follow a three-day rotation and track progress by exercise.">
   <title>Gym Log</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./styles.css?v=exercise-pictures">
+  <script type="module" src="./app.js?v=exercise-pictures"></script>
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to content</a>
@@ -41,6 +41,15 @@
       </main>
     </div>
   </div>
+  <dialog id="exercise-picture" class="exercise-picture" aria-labelledby="exercise-picture-title">
+    <form method="dialog">
+      <div class="panel-heading">
+        <h2 id="exercise-picture-title"></h2>
+        <button class="button" type="submit" autofocus>Close</button>
+      </div>
+      <img id="exercise-picture-full" width="480" height="180" alt="">
+    </form>
+  </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

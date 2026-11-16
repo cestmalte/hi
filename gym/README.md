@@ -81,3 +81,5 @@ python3 -m http.server 8000
 2. Commit the directory and merge it into `main`, the branch used by GitHub Pages for `cestmalte.eu`. The existing root `CNAME` points to `cestmalte.eu`.
 3. Check the Pages deployment in the repository's Actions tab. Open [cestmalte.eu/gym/](https://cestmalte.eu/gym/) after deployment completes.
 4. For future updates, commit changes under `gym/` and let the same Pages deployment publish them. [GitHub Pages publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+
+Exercise demonstration photos are from [Free Exercise DB](https://github.com/yuhonas/free-exercise-db). The pike push-up is illustrated in two positions.

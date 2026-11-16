@@ -312,3 +312,16 @@ tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
 @media (max-width: 365px) {
   .log-form .panel:first-child > .field-grid, .compare-form .range .field-grid { grid-template-columns: 1fr; }
 }
+
+.exercise-name-picture, .plan-exercise-picture { display: flex; align-items: flex-start; gap: 9px; min-width: 0; }
+.exercise-name-picture { align-items: center; }
+.exercise-image { width: 80px; height: 30px; object-fit: contain; display: block; flex: none; border-radius: 5px; background: #f3f2ee; }
+.exercise-image-button { display: grid; place-items: center; min-height: 44px; flex: none; padding: 4px; background: var(--field); border: 1px solid var(--line); border-radius: 7px; }
+.exercise-image-button:hover { border-color: var(--accent); }
+.exercise-picture { width: min(540px, calc(100% - 28px)); max-height: 85vh; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.exercise-picture::backdrop { background: rgb(0 0 0 / 75%); }
+.exercise-picture img { display: block; width: 100%; height: auto; border-radius: 7px; background: #f3f2ee; }
+@media (max-width: 540px) {
+  .plan-exercise-picture { flex-direction: column; gap: 5px; }
+  .picker-options .exercise-image { width: 64px; height: 24px; }
+}
