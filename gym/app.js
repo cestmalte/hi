@@ -28,6 +28,7 @@ const EXERCISE_ALIASES = new Map([
 ]);
 const app = document.querySelector("#app");
 const toast = document.querySelector("#toast");
+const pictureDialog = document.querySelector("#exercise-picture");
 const htmlEscapes = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value = "") => String(value).replace(/[&<>"']/g, char => htmlEscapes[char]);
 const num = value => NUMBER.format(value);
@@ -337,6 +338,25 @@ function renderOverview() {
     </div>`;
 }
 
+function exercisePicture(id, expandable = true) {
+  const exercise = BUILT_IN.get(id);
+  if (!exercise) return "";
+  const image = `<img class="exercise-image" src="./exercise-images/${id}.webp" width="80" height="30" alt="" loading="lazy" decoding="async">`;
+  return expandable
+    ? `<button class="exercise-image-button" type="button" data-action="exercise-picture" data-id="${id}" aria-label="View ${esc(exercise.name)} demonstration" aria-haspopup="dialog">${image}</button>`
+    : image;
+}
+
+function openExercisePicture(id) {
+  const exercise = BUILT_IN.get(id);
+  if (!exercise) return;
+  pictureDialog.querySelector("h2").textContent = exercise.name;
+  const full = pictureDialog.querySelector("img");
+  full.src = `./exercise-images/${id}.webp`;
+  full.alt = `${exercise.name} in two positions`;
+  pictureDialog.showModal();
+}
+
 function catalogOptions() {
   const form = activeDraft();
   const present = new Set(form.entries.map(entry => entry.exerciseId));
@@ -348,14 +368,14 @@ function catalogOptions() {
     || form.entries.some(entry => normalizeName(entry.name) === normalized)
     || Boolean(alias);
   const create = normalized && !exact ? `<button type="button" class="picker-create" data-action="custom-exercise">Add “${esc(exerciseQuery.trim())}”</button>` : "";
-  return `${matches.slice(0, 7).map(item => `<button type="button" data-action="add-exercise" data-id="${esc(item.id)}"><span>${esc(item.name)}</span><small>${esc(item.groups.join(" · "))}</small></button>`).join("")}${create}${!matches.length && !create ? '<p class="dim small">That exercise is already in this workout.</p>' : ""}`;
+  return `${matches.slice(0, 7).map(item => `<button type="button" data-action="add-exercise" data-id="${esc(item.id)}"><span class="exercise-name-picture">${exercisePicture(item.id, false)}<span>${esc(item.name)}</span></span><small>${esc(item.groups.join(" · "))}</small></button>`).join("")}${create}${!matches.length && !create ? '<p class="dim small">That exercise is already in this workout.</p>' : ""}`;
 }
 
 function exerciseCard(entry, index) {
   const id = `entry-${index}`;
   const bodyweight = entry.mode === "bodyweight";
   return `<article class="exercise-card" id="${id}" aria-labelledby="${id}-title">
-    <div class="exercise-card-heading"><div><h3 id="${id}-title">${esc(entry.name)}</h3>${entry.groups.length ? `<p class="dim small">${esc(entry.groups.join(" · "))}</p>` : ""}</div><button class="icon-button" type="button" data-action="remove-exercise" data-entry="${index}" aria-label="Remove ${esc(entry.name)}">×</button></div>
+    <div class="exercise-card-heading"><div class="exercise-name-picture">${exercisePicture(entry.exerciseId)}<div><h3 id="${id}-title">${esc(entry.name)}</h3>${entry.groups.length ? `<p class="dim small">${esc(entry.groups.join(" · "))}</p>` : ""}</div></div><button class="icon-button" type="button" data-action="remove-exercise" data-entry="${index}" aria-label="Remove ${esc(entry.name)}">×</button></div>
     <div class="exercise-options">
       <div class="field"><label for="${id}-mode">Load type</label><select id="${id}-mode" data-entry="${index}" data-field="mode"><option value="weighted" ${bodyweight ? "" : "selected"}>Weighted</option><option value="bodyweight" ${bodyweight ? "selected" : ""}>Bodyweight</option></select></div>
       ${BUILT_IN.has(entry.exerciseId) ? "" : `<div class="field"><label for="${id}-group">Primary group</label><select id="${id}-group" data-entry="${index}" data-field="exercise-group"><option value="">Select group</option>${GROUPS.map(group => `<option ${entry.groups.includes(group) ? "selected" : ""}>${group}</option>`).join("")}</select></div>`}
@@ -569,8 +589,8 @@ function renderPlan() {
       <ul class="plan-list">${day.lifts.map(lift => {
         const main = BUILT_IN.get(lift.id);
         const alternative = lift.alternative;
-        return `<li class="plan-lift"><div><strong>${esc(main.name)}</strong><p class="prescription">${lift.sets} × ${lift.min}–${lift.max} reps</p><p class="dim">${main.groups[0]}</p></div>
-          ${alternative ? `<div class="plan-alt"><p class="dim">Bodyweight option</p><strong>${esc(BUILT_IN.get(alternative.id).name)}</strong><p class="dim">${lift.sets} × ${alternative.min}–${alternative.max} reps${alternative.note ? ` · ${esc(alternative.note)}` : ""}</p></div>` : ""}</li>`;
+        return `<li class="plan-lift"><div class="plan-exercise-picture">${exercisePicture(main.id)}<div><strong>${esc(main.name)}</strong><p class="prescription">${lift.sets} × ${lift.min}–${lift.max} reps</p><p class="dim">${main.groups[0]}</p></div></div>
+          ${alternative ? `<div class="plan-alt plan-exercise-picture">${exercisePicture(alternative.id)}<div><p class="dim">Bodyweight option</p><strong>${esc(BUILT_IN.get(alternative.id).name)}</strong><p class="dim">${lift.sets} × ${alternative.min}–${alternative.max} reps${alternative.note ? ` · ${esc(alternative.note)}` : ""}</p></div></div>` : ""}</li>`;
       }).join("")}</ul></section>`).join("")}
     <section class="panel plan-guide" aria-labelledby="progression-title"><div class="panel-heading"><h2 id="progression-title">Progression</h2></div>
       <p><strong>Bench starting point</strong> · ${esc(displaySets(BENCH_REFERENCE))}. If 60 kg was close to your limit, begin with 55–57.5 kg.</p>
@@ -944,6 +964,7 @@ document.addEventListener("click", event => {
   if (action === "toggle-picker") openExercisePicker();
   if (action === "add-exercise") addExercise(catalog().get(id));
   if (action === "custom-exercise") addCustomExercise();
+  if (action === "exercise-picture") openExercisePicture(id);
   if (action === "add-set" || action === "remove-set" || action === "remove-exercise") {
     const form = activeDraft();
     const sets = form.entries[entry].sets;
