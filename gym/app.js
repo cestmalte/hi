@@ -377,6 +377,7 @@ function exerciseCard(entry, index) {
   return `<article class="exercise-card" id="${id}" aria-labelledby="${id}-title">
     <div class="exercise-card-heading"><div class="exercise-name-picture">${exercisePicture(entry.exerciseId)}<div><h3 id="${id}-title">${esc(entry.name)}</h3>${entry.groups.length ? `<p class="dim small">${esc(entry.groups.join(" · "))}</p>` : ""}</div></div><button class="icon-button" type="button" data-action="remove-exercise" data-entry="${index}" aria-label="Remove ${esc(entry.name)}">×</button></div>
     <div class="exercise-options">
+      ${editing ? `<div class="field"><label for="${id}-exercise">Exercise identity</label><select id="${id}-exercise" data-entry="${index}" data-field="exercise-identity">${[...catalog().values()].map(item => `<option value="${esc(item.id)}" ${item.id === entry.exerciseId ? "selected" : ""}>${esc(item.name)}</option>`).join("")}</select></div>` : ""}
       <div class="field"><label for="${id}-mode">Load type</label><select id="${id}-mode" data-entry="${index}" data-field="mode"><option value="weighted" ${bodyweight ? "" : "selected"}>Weighted</option><option value="bodyweight" ${bodyweight ? "selected" : ""}>Bodyweight</option></select></div>
       ${BUILT_IN.has(entry.exerciseId) ? "" : `<div class="field"><label for="${id}-group">Primary group</label><select id="${id}-group" data-entry="${index}" data-field="exercise-group"><option value="">Select group</option>${GROUPS.map(group => `<option ${entry.groups.includes(group) ? "selected" : ""}>${group}</option>`).join("")}</select></div>`}
     </div>
@@ -1027,6 +1028,13 @@ document.addEventListener("change", event => {
   else if (field === "mode") {
     form.entries[entry].mode = target.value;
     form.entries[entry].sets = form.entries[entry].sets.map(set => ({ ...set, weightKg: "" }));
+  } else if (field === "exercise-identity") {
+    const selected = catalog().get(target.value);
+    if (!selected) return;
+    form.entries[entry].exerciseId = selected.id;
+    form.entries[entry].name = selected.name;
+    form.entries[entry].groups = [...selected.groups];
+    form.entries[entry].mode = selected.mode;
   } else if (field === "exercise-group") form.entries[entry].groups = target.value ? [target.value] : [];
   else return;
   setWorkoutError("");
