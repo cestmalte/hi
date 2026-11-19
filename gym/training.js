@@ -10,6 +10,7 @@ export const EXERCISES = [
   exercise("lateral-raise", "Dumbbell lateral raise", ["Shoulders"]),
   exercise("lat-pulldown", "Lat pulldown", ["Back"]),
   exercise("chest-supported-row", "Chest-supported dumbbell row", ["Back"]),
+  exercise("chest-supported-t-bar-row", "Chest-Supported T-Bar Row", ["Back"]),
   exercise("hammer-curl", "Dumbbell hammer curl", ["Arms"]),
   exercise("overhead-triceps-extension", "Overhead cable triceps extension", ["Arms"]),
   exercise("reverse-crunch", "Reverse crunch", ["Abs"], "bodyweight"),
